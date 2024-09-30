@@ -9,6 +9,9 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../../common/prelude
+      ../../common/develop
+      ../../common/daily
+      ../../common/service
     ];
 
   owner = "zyz";
@@ -19,9 +22,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  environment.systemPackages = with pkgs; [
-     clash-verge-rev
-  ];
+
   
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

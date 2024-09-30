@@ -151,6 +151,8 @@
       file #查看文件信息
       tree #树状展示文件目录结构
       #nm-tray #Network Manager frontend (tray icon?) written in Qt
+      neofetch
+      cloc
     ];
 
   };
@@ -171,8 +173,7 @@
 
     { config = lib.mkIf (config.gui.enable && config.gui.desktopEnvironment == "kde") {
       services.xserver = {
-        desktopManager.plasma5.enable = true;
-        desktopManager.plasma5.useQtScaling = true; #Enable HiDPI scaling in Qt. seems no obvious effect
+        desktopManager.plasma6.enable = true;
       };
     }; }
 
