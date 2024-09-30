@@ -5,7 +5,7 @@
 
   config = {
     environment.systemPackages = with pkgs; [
-      mysql57
+      mysql84
     ];
   };
 }
