@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ config, pkgs, lib, nixpkgs, packages, ... }: 
+{ config, pkgs, lib, ... }: 
 {
   options = {
     profileName = lib.mkOption {
@@ -73,12 +73,6 @@
     };
 
     nixpkgs.config.allowUnfree = true;
-
-    # users that have additional rights when connecting to the Nix daemon
-    nix.settings.trusted-users = [ "root" config.owner ];
-
-    # make nix version keep sync with nixos
-    nix.settings.nix-path = [ "nixpkgs=${nixpkgs}" ];
 
     # automatic run `nix-store --optimise` everyday
     nix.optimise.automatic = true;
