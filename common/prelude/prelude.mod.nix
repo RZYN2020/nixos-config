@@ -94,10 +94,10 @@
     # Power saving
     #DOC: https://www.kernel.org/doc/Documentation/cpu-freq/governors.txt
     powerManagement.cpuFreqGovernor = lib.mkOverride 999 "powersave";
-    hardware.nvidia.powerManagement.enable = lib.mkOverride 999 false; # Experimental power management, see the NVIDIA docs, on Chapter 21.
+    # hardware.nvidia.powerManagement.enable = lib.mkOverride 999 false; # Experimental power management, see the NVIDIA docs, on Chapter 21.
 
     # HiDPI Display
-    hardware.video.hidpi.enable = lib.mkOverride 999 true;
+    # hardware.video.hidpi.enable = lib.mkOverride 999 true;
     #services.xserver.dpi = 180; # for 4K monitor
 
     # DDC/CI control display/monitor via software
