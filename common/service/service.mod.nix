@@ -1,7 +1,8 @@
 { config, pkgs, lib, ... }: 
 {
 
-  services.sftpgo.enable = true;
+
+
 
   environment.systemPackages = with pkgs; [
     sftpgo # file server
