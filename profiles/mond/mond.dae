@@ -1,159 +1,191 @@
 global {
-    ##### Software options.
-    # Log level: error, warn, info, debug, trace.
-    log_level: info
+  # 绑定到 LAN 和/或 WAN 接口。将下述接口替换成你自己的接口名。
+  lan_interface: docker0
+  wan_interface: auto # 使用 "auto" 自动侦测 WAN 接口。
 
-    ##### Interface and kernel options.
-
-    # The LAN interface to bind. Use it if you want to proxy LAN.
-    # Multiple interfaces split by ",".
-    lan_interface: docker0
-
-    # The WAN interface to bind. Use it if you want to proxy localhost.
-    # Multiple interfaces split by ",". Use "auto" to auto detect.
-    wan_interface: auto
-
-    # Automatically configure Linux kernel parameters like ip_forward and send_redirects. Check out
-    # https://github.com/daeuniverse/dae/blob/main/docs/en/user-guide/kernel-parameters.md to see what will dae do.
-    auto_config_kernel_parameter: true
-
-    ##### Node connectivity check.
-    # These options, as defaults, are effective when no definition is given in the group.
-
-
-    check_interval: 30s
-
-    # Group will switch node only when new_latency <= old_latency - tolerance.
-    check_tolerance: 50ms
-
-
-    ##### Connecting options.
-
-    # TLS implementation. tls is to use Go's crypto/tls. utls is to use uTLS, which can imitate browser's Client Hello.
-    tls_implementation: utls
-
-    # The Client Hello ID for uTLS to imitate. This takes effect only if tls_implementation is utls.
-    # See more: https://github.com/daeuniverse/dae/blob/331fa23c16/component/outbound/transport/tls/utls.go#L17
-    utls_imitate: chrome_auto
-
-    # Multipath TCP (MPTCP) support. If is true, dae will try to use MPTCP to connect all nodes, but it will only take
-    # effects when the node supports MPTCP. It can use for load balance and failover to multiple interfaces and IPs.
-    mptcp: false
+  log_level: info
+  allow_insecure: false
+  auto_config_kernel_parameter: true
 }
 
-# Subscriptions defined here will be resolved as nodes and merged as a part of the global node pool.
-# Support to give the subscription a tag, and filter nodes from a given subscription in the group section.
 subscription {
-    # Add your subscription links here.
-    xiangwang: "http://172.105.209.249:8570/link/xyPXblsDS6GQCirq?sub=1"
+  # 在下面填入你的订阅链接。
+  'http://172.105.209.249:8570/link/xyPXblsDS6GQCirq?sub=1'
 }
 
-# Nodes defined here will be merged as a part of the global node pool.
-node {
-}
-
-
-group {
-}
-
+# 更多的 DNS 样例见 https://github.com/daeuniverse/dae/blob/main/docs/en/configuration/dns.md
 dns {
-  ipversion_prefer: 4 #${if config.networking.enableIPv6 then "6" else "4"}
-
   upstream {
-    googledns: 'tcp+udp://dns.google.com:53'
+    googledns: 'tcp+udp://dns.google:53'
     alidns: 'udp://dns.alidns.com:53'
   }
-
   routing {
     request {
-      qname(geosite:category-ads) -> reject
-      qname(geosite:cn) -> router
-      qname(geosite:category-games@cn) -> router
-      qname(geosite:china-list) -> router  #Need asserts: https://github.com/Loyalsoldier/v2ray-rules-dat
-      qname(geosite:apple-cn) -> router
-      qname(geosite:google-cn) -> router
-      fallback: smartdns
+      fallback: alidns
     }
     response {
-      upstream(smartdns) -> accept
-      upstream(router) && ip(geoip:private) -> smartdns
+      upstream(googledns) -> accept
+      ip(geoip:private) && !qname(geosite:cn) -> googledns
       fallback: accept
     }
   }
 }
 
+group {
+  proxy {
+    #filter: name(keyword: HK, keyword: SG)
+    policy: min_moving_avg
+  }
+}
+
+# 更多的 Routing 样例见 https://github.com/daeuniverse/dae/blob/main/docs/en/configuration/routing.md
 routing {
-  # Ref: https://github.com/v2fly/domain-list-community
-  # Ref More: https://github.com/Loyalsoldier/v2ray-rules-dat
-  #  which depends on this to set geodata: https://github.com/daeuniverse/dae/pull/84
-  # Doc: https://github.com/daeuniverse/dae/blob/main/docs/en/configuration/external-dns.md#external-dns-on-localhost
+  pname(NetworkManager) -> direct
+  dip(224.0.0.0/3, 'ff00::/8') -> direct
 
-  pname(NetworkManager, transmission-da, transmission-dae, transmission-daemon) -> must_direct
-  pname(dig) -> must_direct
-  pname(systemd-resolved, dnsmasq, smartdns, AdGuardHome) && l4proto(udp) && dport(53) -> must_direct
+  ### 以下为自定义规则
 
-  #domain(geosite:category-ads) -> block
-  domain(suffix: local) -> must_direct   # for mDNS LAN hosts
-
-  # 避免撞上机场审计策略
-  domain(
-    keyword: dafahao,
-    keyword: minghui,
-    keyword: dongtaiwang,
-    keyword: epochtimes,
-    keyword: ntdtv,
-    keyword: falundafa,
-    keyword: wujieliulan,
-    keyword: architectureenperspective
-  ) -> block
-  domain(
-    keyword: tracker,
-    keyword: xunlei,
-    keyword: thunder,
-    keyword: xlliveud,
-    keyword: torrent,
-    keyword: info_hash, #NOTE: dae 0.4.0 version doesn't support lines contains _
-    keyword: get_peers,
-    keyword: find_node,
-    keyword: bittorrent,
-    keyword: announce_peer,
-    keyword: announce,
-    keyword: joker
-  ) -> must_direct
-
-  # for ChatGPT
-  domain(suffix: openai.com) -> proxy_usa
-  domain(suffix: oaistatic.com) -> proxy_usa
-  domain(suffix: oaiusercontent.com) -> proxy_usa
-  domain(suffix: stripe.com) -> proxy_usa
-
-  # for Claude
-  domain(suffix: anthropic.com) -> proxy_usa
-  domain(suffix: claude.ai) -> proxy_usa
-
-  # for New Bing
-  domain(suffix: bing.com) -> proxy_usa
-  domain(suffix: bing.net) -> proxy_usa
-  domain(suffix: bingapis.com) -> proxy_usa
-
-  # for Quizlet Q-Chat
-  domain(suffix: quizlet.com) -> proxy_usa
-
-  # blacklist (for some LAN devices)
-  sip(${lan-devices-use-blacklist}) && domain(geosite:category-porn) -> block
-  sip(${lan-devices-use-blacklist}) && domain(geosite:geolocation-!cn) -> proxy
-  sip(${lan-devices-use-blacklist}) -> must_direct
-
-  # whitelist
-  domain(geosite:cn) -> must_direct
-  domain(geosite:category-games@cn) -> must_direct
-  domain(geosite:china-list) -> must_direct  #Need asserts: https://github.com/Loyalsoldier/v2ray-rules-dat
-  domain(geosite:apple-cn) -> must_direct
-  domain(geosite:google-cn) -> must_direct
-
+  # 禁用 h3，因为它通常消耗很多 CPU 和内存资源
+  l4proto(udp) && dport(443) -> block
   dip(geoip:private) -> direct
-  dip(224.0.0.0/3, 'ff00::/8') -> direct   # for Multicast
   dip(geoip:cn) -> direct
+  domain(geosite:cn) -> direct
 
   fallback: proxy
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
