@@ -23,15 +23,28 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   services.dae.enable = true;
-  services.dae.configFile = "mond.dae";
+  services.dae.configFile = "/home/zyz/nixos-config/profiles/mond/mond.dae";
 
 
   services.create_ap.enable = true;
   services.create_ap.settings = {
-    INTERNET_IFACE = "eth0";
+    INTERNET_IFACE = "enp3s0";
     ssid = "mond";
     password = "mondmond";
-    interface = "wlan0";
+    interface = "wlp1s0";
+  };
+
+
+  services.openssh = {
+    enable = true;
+    ports = [ 22 ];
+    settings = {
+        PasswordAuthentication = true;
+        AllowUsers = null; # Allows all users by default. Can be [ "user1" "user2" ]
+        UseDns = false;
+        X11Forwarding = false;
+        PermitRootLogin = "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
+      };
   };
   
   # This value determines the NixOS release from which the default

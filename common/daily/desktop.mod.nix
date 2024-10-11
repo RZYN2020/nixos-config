@@ -18,7 +18,6 @@
 
   environment.systemPackages = with pkgs; [
     microsoft-edge
-    clash-verge-rev
     vscode
     telegram-desktop
   ];

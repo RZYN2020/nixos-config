@@ -143,7 +143,7 @@
       #git-crypt gnupg pinentry pinentry-qt icdiff
       #zsh antigen
       #fzf
-      tmux 
+      tmux
       #sqlite 
       xclip
       fd #文件名/目录名 搜索
