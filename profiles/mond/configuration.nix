@@ -21,6 +21,8 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  
+  services.vscode-server.enable = true;
 
   services.dae.enable = true;
   services.dae.configFile = "/home/zyz/nixos-config/profiles/mond/mond.dae";
@@ -28,7 +30,7 @@
 
   services.create_ap.enable = true;
   services.create_ap.settings = {
-    INTERNET_IFACE = "enp3s0";
+    INTERNET_IFACE = "wlp1s0";
     ssid = "mond";
     password = "mondmond";
     interface = "wlp1s0";
@@ -46,7 +48,13 @@
         PermitRootLogin = "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
       };
   };
-  
+
+  environment.systemPackages = with pkgs; [
+    dae # proxy
+  #bitwarden-cli # passwd mgmt
+  #jellycli # media host
+  #sonarr # auto bttorrent download
+  ];
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave

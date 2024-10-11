@@ -3,13 +3,15 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: {
+  outputs = { self, nixpkgs, vscode-server,... }@inputs: {
     nixosConfigurations = {
         mond = nixpkgs.lib.nixosSystem { # N100
           system = "x86_64-linux";
           modules = [
+            vscode-server.nixosModules.default
             ./profiles/mond/configuration.nix
           ];
         };
