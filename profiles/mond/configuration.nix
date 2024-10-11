@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
@@ -24,18 +24,15 @@
   
   services.vscode-server.enable = true;
 
-  services.dae.enable = true;
-  services.dae.configFile = "/home/zyz/nixos-config/profiles/mond/mond.dae";
+  # services.create_ap.enable = true;
+  # services.create_ap.settings = {
+  #   INTERNET_IFACE = "wlp1s0";
+  #   ssid = "mond";
+  #   password = "mondmond";
+  #   interface = "wlp1s0";
+  # };
 
-
-  services.create_ap.enable = true;
-  services.create_ap.settings = {
-    INTERNET_IFACE = "wlp1s0";
-    ssid = "mond";
-    password = "mondmond";
-    interface = "wlp1s0";
-  };
-
+  # networking.firewall.allowedTCPPorts = [ 2023 ]; # 22 was opened automatically
 
   services.openssh = {
     enable = true;
@@ -49,12 +46,32 @@
       };
   };
 
-  environment.systemPackages = with pkgs; [
-    dae # proxy
+ services.dae = {
+      enable = true;
+      configFile = "/home/zyz/nixos-config/profiles/mond/mond.dae";
+
+      openFirewall = {
+        enable = true;
+        port = 12345;
+      };
+
+      /* default options
+
+      package = inputs.daeuniverse.packages.x86_64-linux.daed;
+      configDir = "/etc/daed";
+      listen = "127.0.0.1:2023";
+
+      */
+  };
+
+  environment.systemPackages =
+    with inputs.daeuniverse.packages.x86_64-linux;
+      [ dae];
+  # environment.systemPackages = with pkgs; [
   #bitwarden-cli # passwd mgmt
   #jellycli # media host
   #sonarr # auto bttorrent download
-  ];
+  # ];
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
