@@ -24,6 +24,15 @@
 
   services.dae.enable = true;
   services.dae.configFile = "mond.dae";
+
+
+  services.create_ap.enable = true;
+  services.create_ap.settings = {
+    INTERNET_IFACE = "eth0";
+    ssid = "mond";
+    password = "mondmond";
+    interface = "wlan0";
+  };
   
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
