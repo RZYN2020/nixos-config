@@ -23,35 +23,24 @@
   boot.loader.efi.canTouchEfiVariables = true;
   
   services.vscode-server.enable = true;
-networking.wlanInterfaces = {
-  wap0 = {
-    device = "wlp1s0";
-    mac = "bc:2b:02:10:d1:9f";
-  };
-
-  wap1 = {
-   device = "wlp1s0";
-   mac = "bc:2b:02:10:d1:9d";
-  };
-};
   networking.networkmanager.unmanaged = [
 		"*"
 	];
   
-  networking.wireless.interfaces = [ "wap1" ];
   networking.wireless.networks = {
 	  missxinxin = {
 		  psk = "Verymissxinxin2024";
 	  };
   };
 
- services.create_ap.enable = true;
- services.create_ap.settings = {
-  INTERNET_IFACE = "wap1";
-  PASSPHRASE = "123987456";
-  SSID = "mond";
-  WIFI_IFACE = "wap0";
-};
+  #services.create_ap.enable = true;
+  #services.create_ap.settings = {
+
+#	  WIFI_IFACE = "wlp1s0";
+#	  INTERNET_IFACE = "wlp1s0";
+#	  PASSPHRASE = "123987456";
+#	  SSID = "mond";
+# };
 
   # networking.firewall.allowedTCPPorts = [ 2023 ]; # 22 was opened automatically
 
