@@ -23,24 +23,34 @@
   boot.loader.efi.canTouchEfiVariables = true;
   
   services.vscode-server.enable = true;
-  networking.networkmanager.unmanaged = [
-		"*"
-	];
+
   
-  networking.wireless.networks = {
-	  missxinxin = {
-		  psk = "Verymissxinxin2024";
-	  };
+ networking.networkmanager.ensureProfiles.profiles = 
+{
+  ziroom = {
+    connection = {
+      id = "ziroom201";
+      type = "wifi";
+      interface-name = "wlp1s0";
+    };
+    ipv4 = {
+      method = "auto";
+    };
+    ipv6 = {
+      addr-gen-mode = "default";
+      method = "auto";
+    };
+    wifi = {
+      mode = "infrastructure";
+      ssid = "ziroom201";
+    };
+    wifi-security = {
+      auth-alg = "open";
+      key-mgmt = "wpa-psk";
+      psk = "ziroomer005";
+    };
   };
-
-  #services.create_ap.enable = true;
-  #services.create_ap.settings = {
-
-#	  WIFI_IFACE = "wlp1s0";
-#	  INTERNET_IFACE = "wlp1s0";
-#	  PASSPHRASE = "123987456";
-#	  SSID = "mond";
-# };
+};
 
   # networking.firewall.allowedTCPPorts = [ 2023 ]; # 22 was opened automatically
 
