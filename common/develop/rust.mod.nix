@@ -1,10 +1,6 @@
 { config, pkgs, lib, ... }: 
 {
-  imports = [
-    ./c.mod.nix
-  ];
-
-  config = {
+  config = lib.mkIf config.develop.enable {
 
     #({ pkgs, ... }: {
     #  nixpkgs.overlays = [ rust-overlay.overlay ];

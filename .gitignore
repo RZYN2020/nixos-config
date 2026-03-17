@@ -1,0 +1,14 @@
+result
+result-*
+.direnv
+.env
+secrets.nix
+**/secrets.nix
+secrets/
+!secrets/.gitkeep
+!secrets/secrets.yaml
+secrets/*.local.yaml
+secrets/local/
+**/*.age
+**/*.pem
+**/*.key

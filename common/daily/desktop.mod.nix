@@ -1,7 +1,6 @@
 { config, pkgs, lib, ... }: 
 {
-
-    # 字体配置
+  config = lib.mkIf config.gui.enable {
     fonts = {
       fontconfig.enable = true;
       enableFontDir = true;
@@ -15,10 +14,10 @@
       ];
     };
 
-
-  environment.systemPackages = with pkgs; [
-    microsoft-edge
-    vscode
-    telegram-desktop
-  ];
+    environment.systemPackages = with pkgs; [
+      microsoft-edge
+      vscode
+      telegram-desktop
+    ];
+  };
 }

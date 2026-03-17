@@ -3,7 +3,7 @@
   options = {
     develop.c.enable = lib.mkOption {
       type = lib.types.bool;
-      default = false;
+      default = true;
       description = ''
         Whether need c develop environment
       '';
@@ -24,10 +24,9 @@
     };
   };
 
-  config = {
-    environment.systemPackages = with pkgs; [
-      gcc gnumake
-      gdb
-    ];
+  config = lib.mkIf (config.develop.enable && config.develop.c.enable) {
+    environment.systemPackages =
+      (lib.optionals config.develop.c.toolchain (with pkgs; [ gcc gnumake ]))
+      ++ (lib.optionals config.develop.c.debug (with pkgs; [ gdb ]));
   };
 }

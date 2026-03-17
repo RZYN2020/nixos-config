@@ -2,7 +2,7 @@
 {
   #Ref: https://nixos.wiki/wiki/Node.js
 
-  config = {
+  config = lib.mkIf config.develop.enable {
     environment.systemPackages = with pkgs; [
       nodejs
     ];

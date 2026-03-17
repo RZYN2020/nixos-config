@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }: 
 {
-  config = {
+  config = lib.mkIf config.develop.enable {
     environment.systemPackages = with pkgs; [
       patchelf
       bintools-unwrapped

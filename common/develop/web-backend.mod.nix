@@ -3,7 +3,7 @@
   imports = [
   ];
 
-  config = {
+  config = lib.mkIf config.develop.enable {
     environment.systemPackages = with pkgs; [
       mysql84
     ];

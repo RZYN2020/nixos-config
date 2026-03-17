@@ -9,13 +9,16 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../../common/prelude
+      ../../common/secrets
       ../../common/develop
       ../../common/service
     ];
 
 
-  owner = "zyz"
-  gui.enable = false
+  owner = "zyz";
+  profileName = "sonne";
+  gui.enable = false;
+  develop.enable = false;
 
 
   # This value determines the NixOS release from which the default

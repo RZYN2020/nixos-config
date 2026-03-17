@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../../common/prelude
+      ../../common/secrets
       ../../common/develop
       ../../common/daily
       ../../common/service
@@ -25,50 +26,28 @@
   services.vscode-server.enable = true;
 
   
- networking.networkmanager.ensureProfiles.profiles = 
-{
-  ziroom = {
-    connection = {
-      id = "ziroom201";
-      type = "wifi";
-      interface-name = "wlp1s0";
-    };
-    ipv4 = {
-      method = "auto";
-    };
-    ipv6 = {
-      addr-gen-mode = "default";
-      method = "auto";
-    };
-    wifi = {
-      mode = "infrastructure";
-      ssid = "ziroom201";
-    };
-    wifi-security = {
-      auth-alg = "open";
-      key-mgmt = "wpa-psk";
-      psk = "ziroomer005";
-    };
-  };
-};
-
   # networking.firewall.allowedTCPPorts = [ 2023 ]; # 22 was opened automatically
 
   services.openssh = {
     enable = true;
     ports = [ 22 ];
+    openFirewall = false;
     settings = {
-        PasswordAuthentication = true;
-        AllowUsers = null; # Allows all users by default. Can be [ "user1" "user2" ]
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+        AllowUsers = [ "zyz" ];
         UseDns = false;
         X11Forwarding = false;
-        PermitRootLogin = "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
+        PermitRootLogin = "no";
       };
   };
 
+  services.tailscale.enable = true;
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
+
  services.dae = {
       enable = true;
-      configFile = "/home/zyz/nixos-config/profiles/mond/mond.dae";
+      configFile = ./mond.dae;
 
       openFirewall = {
         enable = true;

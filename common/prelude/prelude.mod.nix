@@ -54,7 +54,7 @@
     networking.networkmanager.enable = true;
     systemd.services.NetworkManager-wait-online.enable = false; # workaround for issue: https://mail.gnome.org/archives/networkmanager-list/2018-June/msg00008.html
     #networking.networkmanager.unmanaged = builtins.attrNames config.networking.wireless.networks;
-    networking.networkmanager.unmanaged = builtins.attrNames config.networking.wireguard.interfaces;
+    networking.networkmanager.unmanaged = builtins.attrNames (config.networking.wireguard.interfaces or {});
 
     networking.wireless.enable = (config.networking.wireless.networks != {});  # Enables wireless support via wpa_supplicant.
     networking.wireless.userControlled.enable = !config.networking.networkmanager.enable;
@@ -126,7 +126,7 @@
     };
 
     users.groups.${config.owner} = {
-      gid = 1000;
+      gid = lib.mkDefault 1000;
       name = config.owner;
       members = [ config.owner ];
     };
@@ -191,4 +191,3 @@
   ];
 
 }
-

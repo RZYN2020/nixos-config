@@ -1,10 +1,6 @@
 { config, pkgs, lib, ... }: 
 {
-  imports = [
-    ./c.mod.nix
-  ];
-
-  config = {
+  config = lib.mkIf config.develop.enable {
     environment.systemPackages = with pkgs; [
       stack haskell-language-server
     ];
