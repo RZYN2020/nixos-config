@@ -1,7 +1,3 @@
-下面是一份适合放在 README 中的 NixOS Flake 项目使用指南：
-
----
-
 # NixOS Configuration (Flake)
 
 本仓库使用 [Nix Flakes](https://nixos.wiki/wiki/Flakes) 管理 NixOS 系统配置。
