@@ -45,22 +45,20 @@
   services.tailscale.enable = true;
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
 
- services.dae = {
+  services.dae = {
+    enable = true;
+    configFile = config.sops.secrets.dae-config.path;
+
+    openFirewall = {
       enable = true;
-      configFile = ./mond.dae;
+      port = 12345;
+    };
+  };
 
-      openFirewall = {
-        enable = true;
-        port = 12345;
-      };
-
-      /* default options
-
-      package = inputs.daeuniverse.packages.x86_64-linux.daed;
-      configDir = "/etc/daed";
-      listen = "127.0.0.1:2023";
-
-      */
+  sops.secrets.dae-config = {
+    mode = "0400";
+    # dae service runs as root usually, so root:root is fine.
+    # If dae runs as a specific user, change owner here.
   };
 
   environment.systemPackages =

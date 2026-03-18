@@ -203,6 +203,11 @@ wifi-nmconnection: |
   [ipv6]
   addr-gen-mode=default
   method=auto
+dae-config: |
+  global {
+    # 你的 dae 配置内容...
+    # 订阅链接可以直接写在这里
+  }
 ```
 
 > **后续更新密钥的注意点**：  
